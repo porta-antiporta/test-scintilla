@@ -1,19 +1,36 @@
 // audio.js — sound feedback via Web Audio API
 //
 // Generates tones programmatically — no audio files needed.
-// AudioContext is created lazily on first use (browsers require a user gesture).
+//
+// iOS Safari suspends AudioContext until a synchronous user gesture AND requires
+// a silent buffer to be played in that same gesture to fully unlock it.
+// unlockAudio() should be called on the first touchstart/click (see game.js).
+// After that the context stays running and playTone works normally.
 
 'use strict';
 
 let audioContext = null;
 
+// Call once, from within a touchstart or click handler, before any game sounds
+// are needed. Creates the AudioContext and plays a silent buffer to satisfy iOS.
+function unlockAudio() {
+  if (audioContext) return;
+  try {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const buffer = audioContext.createBuffer(1, 1, audioContext.sampleRate);
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioContext.destination);
+    source.start(0);
+  } catch {
+    // Web Audio not available on this device — all sounds will silently no-op
+  }
+}
+
 function getAudioContext() {
   if (!audioContext) {
+    // Fallback: context wasn't pre-unlocked (e.g. desktop, no touch)
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  // Resume if suspended (can happen after page interaction policy kicks in)
-  if (audioContext.state === 'suspended') {
-    audioContext.resume();
   }
   return audioContext;
 }

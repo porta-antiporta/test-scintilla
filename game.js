@@ -468,6 +468,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize',            scheduleCardSizingUpdate);
   window.addEventListener('orientationchange', scheduleCardSizingUpdate);
 
+  // Unlock Web Audio on first interaction — required for iOS Safari, which
+  // suspends AudioContext until a synchronous user gesture plays a sound.
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+  document.addEventListener('click',      unlockAudio, { once: true });
+
   document.getElementById('btn-new-game').addEventListener('click', initGame);
   document.getElementById('btn-deal-more').addEventListener('click', handleDealMore);
   document.getElementById('btn-play-again').addEventListener('click', () => {

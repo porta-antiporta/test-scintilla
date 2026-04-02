@@ -48,21 +48,19 @@ function diamondPath(x, y) {
 }
 
 function squigglePath(x, y) {
-  // Two-lobe wavy shape matching the real Set card game squiggle.
-  // The left lobe sits slightly higher; the right lobe slightly lower,
-  // creating the characteristic gentle S-curve between them.
-  // Traced clockwise; fits within the 70×35 bounding box.
+  // Squiggle: a gently S-tilted pill — one smooth closed curve, no crossing.
+  // Left end centre sits at ~y+15 (upper); right end centre at ~y+22 (lower).
+  // The top and bottom edges each slope gently, producing the S-wave silhouette
+  // of the real Set card game squiggle without any figure-8 pinch.
   const p = (dx, dy) => `${x + dx},${y + dy}`;
   return [
-    `M ${p( 4, 18)}`,
-    `C ${p( 2,  9)} ${p(10,  1)} ${p(22,  2)}`,  // arch over left lobe (top)
-    `C ${p(32,  3)} ${p(37, 11)} ${p(40, 17)}`,  // right side of left lobe → S-transition
-    `C ${p(43, 23)} ${p(48, 30)} ${p(58, 30)}`,  // S-transition → left side of right lobe
-    `C ${p(64, 30)} ${p(69, 24)} ${p(67, 17)}`,  // right rounded end
-    `C ${p(65, 10)} ${p(57,  4)} ${p(48,  7)}`,  // top of right lobe
-    `C ${p(39, 10)} ${p(33, 20)} ${p(30, 20)}`,  // right lobe back toward centre
-    `C ${p(27, 20)} ${p(20, 29)} ${p(12, 30)}`,  // S-transition → bottom of left lobe
-    `C ${p( 6, 31)} ${p( 2, 26)} ${p( 4, 18)}`,  // left rounded end (bottom)
+    `M ${p( 4, 15)}`,                             // leftmost point
+    `C ${p( 3,  6)} ${p(12,  1)} ${p(22,  2)}`,  // top of left rounded end
+    `C ${p(34,  3)} ${p(42,  9)} ${p(52, 10)}`,  // top edge — slopes right and down
+    `C ${p(60, 11)} ${p(66, 15)} ${p(66, 22)}`,  // right rounded end (upper half)
+    `C ${p(66, 29)} ${p(60, 34)} ${p(52, 33)}`,  // right rounded end (lower half)
+    `C ${p(42, 32)} ${p(34, 28)} ${p(22, 29)}`,  // bottom edge — slopes left and up
+    `C ${p(12, 30)} ${p( 3, 25)} ${p( 4, 15)}`,  // bottom of left rounded end
     `Z`,
   ].join(' ');
 }

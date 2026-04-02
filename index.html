@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set Solo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Set Solo</h1>
+    <div class="stats">
+      <span id="stat-sets">Sets: 0</span>
+      <span id="stat-time">0:00</span>
+      <span id="stat-avg">Avg: —</span>
+    </div>
+    <button class="btn" id="btn-new-game">New Game</button>
+  </header>
+
+  <main>
+    <div id="card-grid" role="grid" aria-label="Card table"></div>
+
+    <div id="controls">
+      <button class="btn btn-deal-more hidden" id="btn-deal-more">Deal 3 More</button>
+    </div>
+
+    <div id="message" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <!-- Shown when deck is exhausted and no Sets remain -->
+  <div id="game-end-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="game-end-title">
+    <div id="game-end-content">
+      <h2 id="game-end-title">Game Complete!</h2>
+      <div id="final-stats"></div>
+      <button class="btn" id="btn-play-again">Play Again</button>
+    </div>
+  </div>
+
+  <!-- Load order matters: cards and audio must be available before game.js runs -->
+  <script src="cards.js"></script>
+  <script src="audio.js"></script>
+  <script src="animations.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

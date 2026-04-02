@@ -1,0 +1,348 @@
+/* styles.css — Set Solo layout, card styling, and feedback animations */
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #16213e;
+  color: #e8e8f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+@media (min-width: 480px) {
+  header {
+    padding: 12px 20px;
+    gap: 16px;
+  }
+}
+
+h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin-right: auto;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  font-size: 0.875rem;
+  color: #9090b0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.btn {
+  padding: 7px 16px;
+  /* 44px minimum touch target per WCAG / Apple HIG */
+  min-height: 44px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #fff;
+  }
+}
+
+.btn:focus-visible {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}
+
+.btn-deal-more {
+  border-color: rgba(99, 204, 100, 0.5);
+  color: #6cc;
+}
+
+@media (hover: hover) {
+  .btn-deal-more:hover {
+    background: rgba(99, 204, 100, 0.1);
+    border-color: #6cc;
+    color: #9ef;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ── Main layout ──────────────────────────────────────────────────────────── */
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px 24px;
+  gap: 16px;
+}
+
+@media (min-width: 480px) {
+  main {
+    padding: 24px 16px 32px;
+    gap: 20px;
+  }
+}
+
+/* ── Card grid ────────────────────────────────────────────────────────────── */
+
+#card-grid {
+  display: grid;
+  /* Column width is set as a CSS custom property by updateCardSizing() in game.js.
+     The 1fr fallback activates only if JS hasn't run yet. */
+  grid-template-columns: repeat(3, var(--card-column-width, 1fr));
+  gap: 10px;
+  width: 100%;
+  /* max-width is also set dynamically; 360px is the mobile fallback. */
+  max-width: var(--card-grid-max-width, 360px);
+}
+
+/* Gap only (not max-width) scales by breakpoint; max-width is now JS-driven. */
+@media (min-width: 480px) {
+  #card-grid { gap: 12px; }
+}
+
+@media (min-width: 700px) {
+  #card-grid { gap: 16px; }
+}
+
+@media (min-width: 900px) {
+  #card-grid { gap: 18px; }
+}
+
+@media (min-width: 1200px) {
+  #card-grid { gap: 20px; }
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
+.card {
+  cursor: pointer;
+  border-radius: 10px;
+  /* box-shadow used for selection/feedback states — defined below */
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Ensure focus ring uses box-shadow path */
+  outline: none;
+  /* Eliminate 300 ms tap delay and native touch highlight */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:focus-visible {
+  box-shadow: 0 0 0 3px #4a9eff;
+}
+
+.card svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+/* Lift on hover only for pointer devices — avoids stuck hover state on touch */
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Active press visual for touch devices (substitute for hover lift) */
+.card:active {
+  transform: scale(0.97);
+}
+
+/* Selected — blue ring */
+.card.selected {
+  box-shadow: 0 0 0 3px #4a9eff, 0 4px 14px rgba(74, 158, 255, 0.25);
+  transform: translateY(-3px);
+}
+
+/* Correct Set — green ring + glow */
+.card.correct {
+  box-shadow: 0 0 0 3px #0A0, 0 0 18px rgba(0, 170, 0, 0.45);
+  animation: correct-flash 0.55s ease;
+}
+
+/* Wrong selection — red ring + shake */
+.card.wrong {
+  box-shadow: 0 0 0 3px #D33, 0 0 14px rgba(221, 51, 51, 0.35);
+  animation: wrong-shake 0.55s ease;
+}
+
+/* ── Deal / removal animations ────────────────────────────────────────────── */
+
+@keyframes card-deal {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes card-remove {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+}
+
+/* Applied to each card on deal; removed after animationend */
+.card-dealing {
+  animation: card-deal 0.28s ease-out forwards;
+}
+
+/* Applied to matched cards before DOM removal; pointerEvents disabled in JS */
+.card-removing {
+  animation: card-remove 0.22s ease-in forwards;
+}
+
+/* ── Feedback animations ──────────────────────────────────────────────────── */
+
+@keyframes correct-flash {
+  0%   { box-shadow: 0 0 0 3px #0A0; }
+  40%  { box-shadow: 0 0 0 4px #0d0, 0 0 24px rgba(0, 200, 0, 0.6); }
+  100% { box-shadow: 0 0 0 3px #0A0, 0 0 18px rgba(0, 170, 0, 0.45); }
+}
+
+@keyframes wrong-shake {
+  0%,  100% { transform: translateX(0); }
+  18%        { transform: translateX(-6px); }
+  36%        { transform: translateX(6px); }
+  54%        { transform: translateX(-4px); }
+  72%        { transform: translateX(4px); }
+  90%        { transform: translateX(-2px); }
+}
+
+/* ── Controls row ─────────────────────────────────────────────────────────── */
+
+#controls {
+  display: flex;
+  gap: 12px;
+  min-height: 36px;
+  align-items: center;
+}
+
+/* ── Message bar ──────────────────────────────────────────────────────────── */
+
+#message {
+  min-height: 22px;
+  font-size: 0.9rem;
+  color: #a0a0c0;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* ── Game-end overlay ─────────────────────────────────────────────────────── */
+
+#game-end-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+#game-end-content {
+  background: #1e2a45;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  /* Smaller padding on mobile; desktop gets full 44px/48px */
+  padding: 28px 24px;
+  text-align: center;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 480px) {
+  #game-end-content {
+    padding: 44px 48px;
+  }
+}
+
+#game-end-content h2 {
+  font-size: 1.9rem;
+  margin-bottom: 24px;
+  color: #fff;
+}
+
+#final-stats {
+  margin-bottom: 28px;
+  line-height: 1.9;
+  color: #b0b8d0;
+  font-size: 1rem;
+}
+
+#final-stats strong {
+  color: #e8e8f0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Reduced-motion accessibility ─────────────────────────────────────────── */
+/* Disabling animations here also prevents the animationend-never-fires freeze
+   that would otherwise hang the game for users with reduced-motion enabled.
+   The 600ms fallback timer in animateRemoval (animations.js) is a belt-and-
+   suspenders guard for any other scenario where animationend doesn't fire. */
+
+@media (prefers-reduced-motion: reduce) {
+  .card-dealing,
+  .card-removing,
+  .card.correct,
+  .card.wrong {
+    animation: none;
+  }
+
+  .card {
+    transition: none;
+  }
+}

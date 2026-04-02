@@ -1,0 +1,10 @@
+# La Scintilla project management artifacts — not part of the game source
+.scintilla/
+.claude/
+
+# macOS
+.DS_Store
+
+# Editor artifacts
+.vscode/
+*.swp

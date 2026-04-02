@@ -48,25 +48,24 @@ function diamondPath(x, y) {
 }
 
 function squigglePath(x, y) {
-  // Squiggle: a tilted pill with constant vertical thickness — no waist, no peanut.
+  // Real Set card squiggle, built from first principles:
+  //  1. Parallelogram: corners (12,7)–(58,7)–(58,28)–(12,28), both ends centred at y=17.5
+  //  2. Long edges replaced with S-curves: top arches UP on the left half then DOWN
+  //     on the right half (inflection at x=35); bottom mirrors it exactly
+  //  3. Short ends replaced with circular arcs
   //
-  // Both the top and bottom edges have exactly the same slope (Δy = 6 over Δx = 36),
-  // so the vertical gap between them is 24 units everywhere. This matches the real
-  // Set card squiggle: a smooth, uniformly-thick pill whose left end sits ~6 units
-  // higher than its right end.
-  //
-  //  Left end centre:  (x+11, y+14.5)  — upper
-  //  Right end centre: (x+59, y+20.5)  — lower
-  //  End radius:       ~12
+  // The ends stay at the same height — the S-wave lives in the long edges only,
+  // not in an overall tilt. This matches the physical card game shape.
   const p = (dx, dy) => `${x + dx},${y + dy}`;
   return [
-    `M ${p( 5, 14.5)}`,                                 // leftmost point
-    `C ${p( 5,  5  )} ${p(12,  2.5)} ${p(17,  2.5)}`,  // top of left rounded end
-    `C ${p(30,  4  )} ${p(42,  7  )} ${p(53,  8.5)}`,  // top edge (same slope as bottom)
-    `C ${p(62,  9  )} ${p(65, 14  )} ${p(65, 20.5)}`,  // right rounded end (upper half)
-    `C ${p(65, 27  )} ${p(62, 32  )} ${p(53, 32.5)}`,  // right rounded end (lower half)
-    `C ${p(42, 31  )} ${p(30, 28  )} ${p(17, 26.5)}`,  // bottom edge (same slope as top)
-    `C ${p(12, 26.5)} ${p( 5, 24  )} ${p( 5, 14.5)}`,  // bottom of left rounded end
+    `M ${p( 4, 17.5)}`,                                  // leftmost point
+    `C ${p( 4,  9  )} ${p( 9,  7  )} ${p(12,  7  )}`,   // top of left rounded end
+    `C ${p(20,  2  )} ${p(32,  2  )} ${p(35,  7  )}`,   // top edge left-half  (arches UP)
+    `C ${p(38, 12  )} ${p(50, 12  )} ${p(58,  7  )}`,   // top edge right-half (arches DOWN)
+    `C ${p(65,  7  )} ${p(65, 28  )} ${p(58, 28  )}`,   // right rounded end
+    `C ${p(50, 33  )} ${p(38, 33  )} ${p(35, 28  )}`,   // bottom edge right-half (arches DOWN)
+    `C ${p(32, 23  )} ${p(20, 23  )} ${p(12, 28  )}`,   // bottom edge left-half  (arches UP)
+    `C ${p( 9, 28  )} ${p( 4, 26  )} ${p( 4, 17.5)}`,  // bottom of left rounded end
     `Z`,
   ].join(' ');
 }

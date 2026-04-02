@@ -48,33 +48,40 @@ function diamondPath(x, y) {
 }
 
 function squigglePath(x, y) {
-  // S-shaped squiggle: upper-right lobe bows upward, lower-left lobe bows downward.
-  // Traced as a closed path clockwise around the S outline.
-  // All coordinates are offsets from (x, y); they stay within the 70×35 box.
+  // Two-lobe wavy shape matching the real Set card game squiggle.
+  // The left lobe sits slightly higher; the right lobe slightly lower,
+  // creating the characteristic gentle S-curve between them.
+  // Traced clockwise; fits within the 70×35 bounding box.
   const p = (dx, dy) => `${x + dx},${y + dy}`;
   return [
-    `M ${p(8, 8)}`,
-    `C ${p(8, 1)}   ${p(28, 1)}  ${p(35, 11)}`, // top of upper lobe (bows up)
-    `C ${p(42, 21)} ${p(60, 21)} ${p(62, 14)}`, // crossing right (bows down briefly)
-    `C ${p(65, 7)}  ${p(62, 1)}  ${p(55, 3)}`,  // upper-right tip
-    `C ${p(48, 5)}  ${p(42, 14)} ${p(35, 24)}`, // inner return, descending to center
-    `C ${p(28, 34)} ${p(10, 34)} ${p(8, 26)}`,  // bottom of lower lobe (bows down)
-    `C ${p(6, 19)}  ${p(10, 13)} ${p(18, 12)}`, // lower-left approach
+    `M ${p( 4, 18)}`,
+    `C ${p( 2,  9)} ${p(10,  1)} ${p(22,  2)}`,  // arch over left lobe (top)
+    `C ${p(32,  3)} ${p(37, 11)} ${p(40, 17)}`,  // right side of left lobe → S-transition
+    `C ${p(43, 23)} ${p(48, 30)} ${p(58, 30)}`,  // S-transition → left side of right lobe
+    `C ${p(64, 30)} ${p(69, 24)} ${p(67, 17)}`,  // right rounded end
+    `C ${p(65, 10)} ${p(57,  4)} ${p(48,  7)}`,  // top of right lobe
+    `C ${p(39, 10)} ${p(33, 20)} ${p(30, 20)}`,  // right lobe back toward centre
+    `C ${p(27, 20)} ${p(20, 29)} ${p(12, 30)}`,  // S-transition → bottom of left lobe
+    `C ${p( 6, 31)} ${p( 2, 26)} ${p( 4, 18)}`,  // left rounded end (bottom)
     `Z`,
   ].join(' ');
 }
 
 function ovalPath(x, y) {
-  // Horizontal ellipse expressed as two arcs so it shares the path API
-  // with diamond and squiggle (needed for consistent clipPath usage).
-  const cx  = x + SHAPE_WIDTH / 2;
-  const cy  = y + SHAPE_HEIGHT / 2;
-  const rx  = SHAPE_WIDTH / 2 - 3;  // slight inset so stroke stays within box
-  const ry  = SHAPE_HEIGHT / 2 - 2;
+  // Pill / stadium / capsule shape — matching the real Set card oval.
+  // Straight sides with fully semicircular ends; end radius = half the usable height.
+  // This is visually distinct from the ellipse and matches the physical card game.
+  const r   = 14;           // semicircle radius (usable height ≈ 28, so r = 14)
+  const lx  = x + 17;      // x-centre of left  semicircle
+  const rx  = x + 53;      // x-centre of right semicircle
+  const top = y +  3.5;
+  const bot = y + 31.5;
   return [
-    `M ${cx - rx},${cy}`,
-    `A ${rx},${ry} 0 0 1 ${cx + rx},${cy}`,
-    `A ${rx},${ry} 0 0 1 ${cx - rx},${cy}`,
+    `M ${lx},${top}`,
+    `L ${rx},${top}`,
+    `A ${r},${r} 0 0 1 ${rx},${bot}`,
+    `L ${lx},${bot}`,
+    `A ${r},${r} 0 0 1 ${lx},${top}`,
     `Z`,
   ].join(' ');
 }

@@ -48,19 +48,25 @@ function diamondPath(x, y) {
 }
 
 function squigglePath(x, y) {
-  // Squiggle: a gently S-tilted pill — one smooth closed curve, no crossing.
-  // Left end centre sits at ~y+15 (upper); right end centre at ~y+22 (lower).
-  // The top and bottom edges each slope gently, producing the S-wave silhouette
-  // of the real Set card game squiggle without any figure-8 pinch.
+  // Squiggle: a tilted pill with constant vertical thickness — no waist, no peanut.
+  //
+  // Both the top and bottom edges have exactly the same slope (Δy = 6 over Δx = 36),
+  // so the vertical gap between them is 24 units everywhere. This matches the real
+  // Set card squiggle: a smooth, uniformly-thick pill whose left end sits ~6 units
+  // higher than its right end.
+  //
+  //  Left end centre:  (x+11, y+14.5)  — upper
+  //  Right end centre: (x+59, y+20.5)  — lower
+  //  End radius:       ~12
   const p = (dx, dy) => `${x + dx},${y + dy}`;
   return [
-    `M ${p( 4, 15)}`,                             // leftmost point
-    `C ${p( 3,  6)} ${p(12,  1)} ${p(22,  2)}`,  // top of left rounded end
-    `C ${p(34,  3)} ${p(42,  9)} ${p(52, 10)}`,  // top edge — slopes right and down
-    `C ${p(60, 11)} ${p(66, 15)} ${p(66, 22)}`,  // right rounded end (upper half)
-    `C ${p(66, 29)} ${p(60, 34)} ${p(52, 33)}`,  // right rounded end (lower half)
-    `C ${p(42, 32)} ${p(34, 28)} ${p(22, 29)}`,  // bottom edge — slopes left and up
-    `C ${p(12, 30)} ${p( 3, 25)} ${p( 4, 15)}`,  // bottom of left rounded end
+    `M ${p( 5, 14.5)}`,                                 // leftmost point
+    `C ${p( 5,  5  )} ${p(12,  2.5)} ${p(17,  2.5)}`,  // top of left rounded end
+    `C ${p(30,  4  )} ${p(42,  7  )} ${p(53,  8.5)}`,  // top edge (same slope as bottom)
+    `C ${p(62,  9  )} ${p(65, 14  )} ${p(65, 20.5)}`,  // right rounded end (upper half)
+    `C ${p(65, 27  )} ${p(62, 32  )} ${p(53, 32.5)}`,  // right rounded end (lower half)
+    `C ${p(42, 31  )} ${p(30, 28  )} ${p(17, 26.5)}`,  // bottom edge (same slope as top)
+    `C ${p(12, 26.5)} ${p( 5, 24  )} ${p( 5, 14.5)}`,  // bottom of left rounded end
     `Z`,
   ].join(' ');
 }
